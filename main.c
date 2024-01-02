@@ -99,15 +99,15 @@ void tarih_araligi(char tarih[12], int gun_sayisi, char list[gun_sayisi][12]) {
     sscanf(gecici_tarih, "%d.%d.%d", &gun, &ay, &yil);
 
     for (int i = 0; i < gun_sayisi; i++) {
-        sprintf(gecici_tarih, "%d.%d.%d", gun + 1, ay, yil);
+        sprintf(gecici_tarih, "%d.%d.%d", gun, ay, yil);
 
         if (isValid(gecici_tarih) == false) {
-            gun = 1;
-            ay += 1;
+            gun = 01;
+            ay += 01;
 
             if (isValid(gecici_tarih) == false) {
-                ay = 1;
-                yil += 1;
+                ay = 01;
+                yil += 01;
             }
         }else{
             gun += 1;
@@ -175,6 +175,7 @@ void veri_girisi() {
                       "Basinc Degeri: %.2f\nRuzgar Hizi: %.2f\nGorus Mesafesi: %.2f\nUV Indeksi: %d}\n",
                 veri[i].tarih,veri[i].hava_durumu,veri[i].sicaklik,veri[i].nem_yuzdesi,veri[i].basinc,
                 veri[i].ruzgar, veri[i].gorus_mesafesi, veri[i].UV_indeksi);
+        rewind(file);
         fclose(file);
 
     }
@@ -213,7 +214,7 @@ void veri_goruntule() {
                        "Basinc Degeri: %.2f\nRuzgar Hizi: %.2f\nGorus Mesafesi: %.2f\nUV Indeksi: %d\n",
                        veri.tarih, veri.hava_durumu, veri.sicaklik, veri.nem_yuzdesi, veri.basinc,
                        veri.ruzgar, veri.gorus_mesafesi, veri.UV_indeksi);
-
+                rewind(file);
                 fclose(file);
                 tarihBulundu = 1;
                 break;
@@ -222,26 +223,25 @@ void veri_goruntule() {
         if (!tarihBulundu) {
             printf("Bu tarihe ait girili veri bulunamadı\n");
         }
-
+        rewind(file);
         fclose(file);
     }
 }
 
 void analiz() {
-
     int secim, gun_sayisi;
     float min, max;
     char bas_gun[12];
-    char gun_listesi[gun_sayisi][12];
     char parametre[6][15] = {"Sicaklik", "Nem Yuzdesi", "Basinc",
                              "Ruzgar", "Gorus Mesafesi", "UV_indeksi"};
     struct HavaVerisi veri;
-
 
     printf("Lutfen analiz etmek istediginiz araligin baslangic gununu giriniz: (GG.AA.YYYY)\n");
     scanf("%s", &bas_gun);
     printf("Lutfen analiz etmek istediginiz aralikta kac gun oldugunu giriniz:");
     scanf("%d", &gun_sayisi);
+
+    char gun_listesi[gun_sayisi][12];
 
     tarih_araligi(bas_gun,gun_sayisi, gun_listesi);
 
@@ -251,35 +251,38 @@ void analiz() {
            "(3)\n Ruzgar (4)\n Gorus Mesafesi (5)\n UV_indeksi (6)\n");
     scanf("%d", &secim);
 
-    printf(" %s degerinin min ve max degerini giriniz.\n", parametre[secim-1]);
-    scanf("%f", &min);
-    scanf("%f", &max);
-
-    while (!((secim < 1) || (secim > 6))) {
+    while (((secim < 1) || (secim > 6))) {
         printf("Hata! Lutfen gecerli bir secim yapiniz");
         scanf("%d", &secim);
     }
 
+    printf(" %s degerinin min ve max degerini giriniz.\n", parametre[secim-1]);
+    scanf("%f", &min);
+    scanf("%f", &max);
+
+
     FILE *file = fopen("../WeatherSystem/veriler", "r");
     if (file == NULL) {
         printf("Dosya acma hatasi\n");
-
-        while (fscanf(file, "{Tarih: %s\nHava Durumu: %d\nSicaklik Degeri: %f\nNem Yuzdesi: %d\n"
+    }
+    while (fscanf(file, "{Tarih: %s\nHava Durumu: %d\nSicaklik Degeri: %f\nNem Yuzdesi: %d\n"
                             "Basinc Degeri: %f\nRuzgar Hizi: %f\nGorus Mesafesi: %f\nUV Indeksi: %d}\n",
                       veri.tarih, &veri.hava_durumu, &veri.sicaklik, &veri.nem_yuzdesi, &veri.basinc,
                       &veri.ruzgar, &veri.gorus_mesafesi, &veri.UV_indeksi) == 8) {
-            for (int i = 0; i < gun_sayisi; i++) {
-                if (strcmp(veri.tarih, gun_listesi[i]) == 0) {
-                    switch (secim) {
+        for (int i = 0; i < gun_sayisi; i++) {
+            int veri_gun,veri_ay,veri_yil, liste_gun, liste_ay, liste_yil;
+            sscanf(veri.tarih,"%d.%d.%d",&veri_gun,&veri_ay,&veri_yil);
+            sscanf(veri.tarih,"%d.%d.%d",&liste_gun,&liste_ay,&liste_yil);
+            if (veri_gun == liste_gun && veri_ay==liste_ay && veri_yil==liste_yil) {
+                switch (secim) {
                         case 1:
-                            if ((min <= veri.sicaklik) && (veri.sicaklik <= max)) {
-                                printf("Tarih: %s\nHava Durumu: %d\nSicaklik Degeri: %.2f\nNem Yuzdesi: %d\n"
-                                       "Basinc Degeri: %.2f\nRuzgar Hizi: %.2f\nGorus Mesafesi: %.2f\nUV Indeksi: %d\n",
-                                       veri.tarih, veri.hava_durumu, veri.sicaklik, veri.nem_yuzdesi, veri.basinc,
-                                       veri.ruzgar, veri.gorus_mesafesi, veri.UV_indeksi);
-
-                            }
-                            break;
+                        if ((min <= veri.sicaklik) && (veri.sicaklik <= max)) {
+                            printf("Tarih: %s\nHava Durumu: %d\nSicaklik Degeri: %.2f\nNem Yuzdesi: %d\n"
+                                   "Basinc Degeri: %.2f\nRuzgar Hizi: %.2f\nGorus Mesafesi: %.2f\nUV Indeksi: %d\n",
+                                   veri.tarih, veri.hava_durumu, veri.sicaklik, veri.nem_yuzdesi, veri.basinc,
+                                   veri.ruzgar, veri.gorus_mesafesi, veri.UV_indeksi);
+                        }
+                        break;
                         case 2:
                             if ((min <= veri.nem_yuzdesi) && (veri.nem_yuzdesi <= max)) {
                                 printf("Tarih: %s\nHava Durumu: %d\nSicaklik Degeri: %.2f\nNem Yuzdesi: %d\n"
@@ -325,15 +328,9 @@ void analiz() {
                                        veri.ruzgar, veri.gorus_mesafesi, veri.UV_indeksi);
                             }
                             break;
-                    }
-
-
                 }
             }
-
         }
-
-
     }
 }
 
