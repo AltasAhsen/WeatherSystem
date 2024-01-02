@@ -34,27 +34,33 @@ int main(){
 }
 
 void menu(){
-    int secim;
-    printf("-------------------------------------------------------------");
-    printf("\n-----------------------MENU----------------------------------");
-    printf("\n(1) Veri Girisi"
-           "\n(2) Girilen Verileri Goruntuleme"
-           "\n(3) Belirli Deger Araliklarindaki Verileri Goruntuleme"
-           "\n(4) Verilerin Siralanmasi");
-    printf("\nLutfen yapmak istediginiz islemi secin:");
-    while(scanf("%d", &secim) !=1 || !(0<secim && secim<5)){
-        printf("Lutfen gecerli bir secenek giriniz: ");
+    bool flag = true;
+    while(flag){
+        int secim;
+        printf("-------------------------------------------------------------");
+        printf("\n-----------------------MENU----------------------------------");
+        printf("\n(1) Veri Girisi"
+               "\n(2) Girilen Verileri Goruntuleme"
+               "\n(3) Belirli Deger Araliklarindaki Verileri Goruntuleme"
+               "\n(4) Verilerin Siralanmasi"
+               "\n(0) Çıkış");
+        printf("\nLutfen yapmak istediginiz islemi secin:");
 
-        while(getchar()!='\n'); //Hatalı girişi temizle
+        while(scanf("%d", &secim) !=1 || !(-1<secim && secim<5)){
+            printf("Lutfen gecerli bir secenek giriniz: ");
+            while(getchar()!='\n'); //Hatalı girişi temizle
+        }
 
+        switch(secim){
+            case 1: veri_girisi(); break;
+            case 2: veri_goruntule(); break;
+            case 3: analiz(); break;
+            case 4: siralama(); break;
+            case 0: flag=false; break;
+            default: menu();
+        }
     }
-    switch(secim){
-        case 1: veri_girisi(); break;
-        case 2: veri_goruntule(); break;
-        case 3: analiz(); break;
-        case 4: siralama(); break;
-        default: menu();
-    }
+
 }
 
 bool isValid(char tarih[12]){
@@ -121,11 +127,10 @@ void veri_girisi() {
     for (int i = 0; i < gunSayisi; i++) {
         printf("--------------------------------------------------------------------------");
         printf("\n Tarih (GG.AA.YYYY): ");
-        char dateInput[12];
-        scanf("%s", &dateInput);
-        while(isValid(dateInput) == false){
+        scanf("%s", &veri[i].tarih);
+        while(isValid(veri[i].tarih) == false){
             printf("\n Tarih (GG.AA.YYYY): ");
-            scanf("%s", &dateInput);
+            scanf("%s", &veri[i].tarih);
         }
 
         printf("-------------------------------------------------------------");
@@ -182,7 +187,6 @@ void veri_goruntule() {
 
     for (int i = 0; i < gunsayisi; i++) {
         char dateInput[12];
-
         printf("Goruntulemek istediginiz %d.gunun tarihini girin: ", i + 1);
         scanf("%s", dateInput);
 
