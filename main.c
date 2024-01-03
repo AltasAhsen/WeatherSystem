@@ -16,7 +16,7 @@ int main(){
                "\n(0) Cikis");
         printf("\nLutfen yapmak istediginiz islemi secin:");
 
-        while(scanf("%d", &secim) !=1 || !(-1<secim && secim<5)){
+        while(scanf("%d", &secim) !=1 || !(-1<secim && secim<4)){
             printf("Lutfen gecerli bir secenek giriniz: ");
             while(getchar()!='\n'); //Hatalı girişi temizle
         }
