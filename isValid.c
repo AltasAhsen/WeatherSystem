@@ -16,7 +16,7 @@ bool isValid(char tarih[12]){
         case 8:
         case 10:
         case 12:
-            if(gun < 31)
+            if(gun <= 31)
                 return true;
             break;
         case 2:

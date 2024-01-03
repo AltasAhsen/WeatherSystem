@@ -13,7 +13,7 @@ int main(){
         printf("\n(1) Veri Girisi"
                "\n(2) Girilen Verileri Goruntuleme"
                "\n(3) Belirli Deger Araliklarindaki Verileri Goruntuleme"
-               "\n(0) Çıkış");
+               "\n(0) Cikis");
         printf("\nLutfen yapmak istediginiz islemi secin:");
 
         while(scanf("%d", &secim) !=1 || !(-1<secim && secim<5)){
